@@ -1,4 +1,4 @@
-package digger
+package empleoPonferradaOrg
 
 import (
 	"bytes"
@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func checkParserErrors(t *testing.T, w *EmpleoPonferradaOrgDigger) {
+func checkParserErrors(t *testing.T, w *Digger) {
 	if len(w.GetErrors()) > 0 {
 		t.Errorf("parser has errors: %d", len(w.GetErrors()))
 		for _, errorMessage := range w.GetErrors() {
@@ -24,7 +24,7 @@ func testOffer(t *testing.T, o offer.Offer, e offer.Offer) bool {
 	return true
 }
 
-func TestEmpleoPonferradaOrgDigger_Parse(t *testing.T) {
+func TestDigger_Parse(t *testing.T) {
 	bytesFeed := []byte(`
 		<?xml version="1.0" encoding="utf-8"?>
 		<rss version="2.0">

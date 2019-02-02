@@ -1,54 +1,41 @@
-package digger
+package empleoPonferradaOrg
 
 import (
 	"bytes"
 	"encoding/xml"
 	"fmt"
 	"io/ioutil"
+	"jobdigger/digger"
 	"jobdigger/offer"
+	"jobdigger/rss"
 	"net/http"
 )
 
-type ItemNode struct {
-	Title string `xml:"title"`
-}
-
-type ChannelNode struct {
-	Title       string     `xml:"title"`
-	Link        string     `xml:"link"`
-	Description string     `xml:"description"`
-	Items       []ItemNode `xml:"item"`
-}
-
-type RSSNode struct {
-	Channel ChannelNode `xml:"channel"`
-}
-
-type EmpleoPonferradaOrgDigger struct {
-	Digger
+type Digger struct {
+	digger.Digger
 
 	TargetUri string
 
 	errors []string
 }
 
-func New(targetUri string) *EmpleoPonferradaOrgDigger {
-	return &EmpleoPonferradaOrgDigger{
+func New(targetUri string) *Digger {
+	return &Digger{
 		TargetUri: targetUri,
 		errors:    []string{},
 	}
 }
 
-func (w *EmpleoPonferradaOrgDigger) GetErrors() []string {
+func (w *Digger) GetErrors() []string {
 	return w.errors
 }
 
-func (w *EmpleoPonferradaOrgDigger) addError(message string) {
+func (w *Digger) addError(message string) {
 	w.errors = append(w.errors, message)
 }
 
-func (w *EmpleoPonferradaOrgDigger) Parse(in *bytes.Reader) []offer.Offer {
-	result := RSSNode{}
+func (w *Digger) Parse(in *bytes.Reader) []offer.Offer {
+	result := rss.New()
 
 	content, err := ioutil.ReadAll(in)
 
@@ -75,7 +62,7 @@ func (w *EmpleoPonferradaOrgDigger) Parse(in *bytes.Reader) []offer.Offer {
 	return offers
 }
 
-func (w *EmpleoPonferradaOrgDigger) fetch() *bytes.Reader {
+func (w *Digger) fetch() *bytes.Reader {
 	resp, err := http.Get(w.TargetUri)
 	if err != nil {
 		fmt.Println(err)
@@ -94,7 +81,7 @@ func (w *EmpleoPonferradaOrgDigger) fetch() *bytes.Reader {
 	return reader
 }
 
-func (w *EmpleoPonferradaOrgDigger) FetchAll() []offer.Offer {
+func (w *Digger) FetchAll() []offer.Offer {
 	content := w.fetch()
 
 	if content == nil {
@@ -106,7 +93,7 @@ func (w *EmpleoPonferradaOrgDigger) FetchAll() []offer.Offer {
 	return offers
 }
 
-func (w *EmpleoPonferradaOrgDigger) FetchNew() []*offer.Offer {
+func (w *Digger) FetchNew() []*offer.Offer {
 	var result []*offer.Offer
 
 	return result

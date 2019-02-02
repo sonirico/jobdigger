@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
-	worker2 "jobdigger/digger"
+	"jobdigger/digger/empleoPonferradaOrg"
 )
 
 func main () {
-	worker := worker2.New("https://empleo.ponferrada.org/rss")
-	offers := worker.FetchAll()
+	empleoPonferradaOrgDigger := empleoPonferradaOrg.New("https://empleo.ponferrada.org/rss")
+	offers := empleoPonferradaOrgDigger.FetchAll()
+
 	for index, offer := range offers {
 		fmt.Println(index, offer)
 	}
