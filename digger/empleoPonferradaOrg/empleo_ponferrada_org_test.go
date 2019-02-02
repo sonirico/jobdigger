@@ -5,6 +5,13 @@ import (
 	"testing"
 )
 
+type TestOffer struct {
+	Title string
+	Link string
+	Description string
+	PublishedAt string
+}
+
 func checkParserErrors(t *testing.T, w *Digger) {
 	if len(w.GetErrors()) > 0 {
 		t.Errorf("parser has errors: %d", len(w.GetErrors()))
@@ -14,10 +21,26 @@ func checkParserErrors(t *testing.T, w *Digger) {
 		t.FailNow()
 	}
 }
-func testOffer(t *testing.T, o offer.Offer, e offer.Offer) bool {
-	if o.GetTitle() != e.GetTitle() {
+
+func testOffer(t *testing.T, o offer.Offer, e TestOffer) bool {
+	if o.Title != e.Title {
 		t.Fatalf("expected offer title to be '%s'. Got '%s'",
-			e.GetTitle(), o.GetTitle())
+			e.Title, o.Title)
+		return false
+	}
+	if o.Description != e.Description {
+		t.Fatalf("expected offer description to be '%s'. Got '%s'",
+			e.Description, o.Description)
+		return false
+	}
+	if o.Link != e.Link {
+		t.Fatalf("expected offer link to be '%s'. Got '%s'",
+			e.Link, o.Link)
+		return false
+	}
+	if o.PublishedAt() != e.PublishedAt {
+		t.Fatalf("expected offer date to be '%s'. Got '%s'",
+			e.PublishedAt, o.PublishedAt())
 		return false
 	}
 	return true
@@ -34,13 +57,13 @@ func TestDiggerSeveralResults_Parse(t *testing.T) {
 				<ttl>60</ttl>
 				<item>
 					<title>Fisioterapeuta u osteópata.</title>
-					<link>http://empleo.ponferrada.org/ofertas/ver/d3ce2632-00fe-4f1e-b932-19b90740c369</link>
+					<link>http://empleo.ponferrada.org/ofertas/ver/d3ce2632</link>
 					<description>Fisioterapeuta u osteópata.</description>
 					<pubDate>Wed, 30 Jan 2019 08:11:23 GMT</pubDate>
 				</item>
 				<item>
 					<title>Encofrador (duplicada)</title>
-					<link>http://empleo.ponferrada.org/ofertas/ver/f66d3a27-10b2-468b-a70d-afa591501270</link>
+					<link>http://empleo.ponferrada.org/ofertas/ver/f66d3a27</link>
 					<description>Encofrador oficial de 1ª</description>
 					<pubDate>Wed, 30 Jan 2019 08:11:31 GMT</pubDate>
 				</item>
@@ -55,9 +78,19 @@ func TestDiggerSeveralResults_Parse(t *testing.T) {
 		t.Fatalf("expected %d offers. got %d", 2, len(offers))
 	}
 
-	expected := []offer.Offer{
-		{Title: "Fisioterapeuta u osteópata."},
-		{Title: "Encofrador (duplicada)"},
+	expected := []TestOffer{
+		{
+			Title: "Fisioterapeuta u osteópata.",
+			Link: "http://empleo.ponferrada.org/ofertas/ver/d3ce2632",
+			Description: "Fisioterapeuta u osteópata.",
+			PublishedAt: "2019-01-30 08:11:23 GMT",
+		},
+		{
+			Title: "Encofrador (duplicada)",
+			Link: "http://empleo.ponferrada.org/ofertas/ver/f66d3a27",
+			Description: "Encofrador oficial de 1ª",
+			PublishedAt: "2019-01-30 08:11:31 GMT",
+		},
 	}
 
 	for index, expectedOffer := range expected {

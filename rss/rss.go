@@ -1,7 +1,12 @@
 package rss
 
+type PubDate string
+
 type ItemNode struct {
-	Title string `xml:"title"`
+	Title       string  `xml:"title"`
+	Link        string  `xml:"link"`
+	Description string  `xml:"description"`
+	PubDate     PubDate `xml:"pubDate"`
 }
 
 type ChannelNode struct {
@@ -15,6 +20,6 @@ type RootNode struct {
 	Channel ChannelNode `xml:"channel"`
 }
 
-func New () *RootNode {
+func New() *RootNode {
 	return &RootNode{}
 }
