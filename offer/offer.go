@@ -7,7 +7,7 @@ type Offer struct {
 	link        string
 	description string
 	publishedAt time.Time
-	updatedAt   time.Time
+	updatedAt   *time.Time
 }
 
 func New() *Offer {

@@ -1,7 +1,6 @@
 package empleoPonferradaOrg
 
 import (
-	"bytes"
 	"jobdigger/offer"
 	"testing"
 )
@@ -24,8 +23,8 @@ func testOffer(t *testing.T, o offer.Offer, e offer.Offer) bool {
 	return true
 }
 
-func TestDigger_Parse(t *testing.T) {
-	bytesFeed := []byte(`
+func TestDiggerSeveralResults_Parse(t *testing.T) {
+	payload := []byte(`
 		<?xml version="1.0" encoding="utf-8"?>
 		<rss version="2.0">
 			<channel>
@@ -49,8 +48,7 @@ func TestDigger_Parse(t *testing.T) {
 		</rss>
 	`)
 	digger := New("https://empleo.ponferrada.org/rss")
-	reader := bytes.NewReader(bytesFeed)
-	offers := digger.Parse(reader)
+	offers := digger.Parse(payload)
 	checkParserErrors(t, digger)
 
 	if len(offers) != 2 {
@@ -64,5 +62,37 @@ func TestDigger_Parse(t *testing.T) {
 
 	for index, expectedOffer := range expected {
 		testOffer(t, offers[index], expectedOffer)
+	}
+}
+
+func TestDiggerNoneResults_Parse(t *testing.T) {
+	payload := []byte(`
+		<?xml version="1.0" encoding="utf-8"?>
+		<rss version="2.0">
+			<channel>
+				<title>INSTITUTO MUNICIPAL PARA LA FORMACIÓN Y EL EMPLEO RSS</title>
+				<link>http://empleo.ponferrada.org</link>
+				<description>Ofertas, novedades y artículos de INSTITUTO MUNICIPAL PARA LA FORMACIÓN Y EL EMPLEO</description>
+				<ttl>60</ttl>
+			</channel>
+		</rss>
+	`)
+	digger := New("https://empleo.ponferrada.org/rss")
+	offers := digger.Parse(payload)
+	checkParserErrors(t, digger)
+
+	if len(offers) != 0 {
+		t.Fatalf("expected %d offers. got %d", 0, len(offers))
+	}
+}
+
+
+func TestDiggerEmptyPayload_Parse(t *testing.T) {
+	payload := []byte(``)
+	digger := New("https://empleo.ponferrada.org/rss")
+	digger.Parse(payload)
+
+	if len(digger.GetErrors()) < 1 {
+		t.Fatalf("expected digger to have errors.")
 	}
 }

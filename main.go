@@ -7,7 +7,7 @@ import (
 
 func main () {
 	empleoPonferradaOrgDigger := empleoPonferradaOrg.New("https://empleo.ponferrada.org/rss")
-	offers := empleoPonferradaOrgDigger.FetchAll()
+	offers := empleoPonferradaOrgDigger.Get()
 
 	for index, offer := range offers {
 		fmt.Println(index, offer)

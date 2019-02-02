@@ -1,53 +1,43 @@
 package empleoPonferradaOrg
 
 import (
-	"bytes"
 	"encoding/xml"
-	"fmt"
 	"io/ioutil"
 	"jobdigger/digger"
+	"jobdigger/fetcher"
 	"jobdigger/offer"
 	"jobdigger/rss"
-	"net/http"
 )
 
 type Digger struct {
 	digger.Digger
 
-	TargetUri string
+	Fetcher *fetcher.BaseFetcher
 
 	errors []string
 }
 
 func New(targetUri string) *Digger {
 	return &Digger{
-		TargetUri: targetUri,
+		Fetcher: fetcher.New(targetUri),
 		errors:    []string{},
 	}
 }
 
-func (w *Digger) GetErrors() []string {
-	return w.errors
+func (d *Digger) GetErrors() []string {
+	return d.errors
 }
 
-func (w *Digger) addError(message string) {
-	w.errors = append(w.errors, message)
+func (d *Digger) addError(message string) {
+	d.errors = append(d.errors, message)
 }
 
-func (w *Digger) Parse(in *bytes.Reader) []offer.Offer {
+func (d *Digger) Parse(payload []byte) []offer.Offer {
 	result := rss.New()
-
-	content, err := ioutil.ReadAll(in)
-
-	if err != nil {
-		w.addError(err.Error())
-		return nil
-	}
-
-	parserErr := xml.Unmarshal(content, &result)
+	parserErr := xml.Unmarshal(payload, &result)
 
 	if parserErr != nil {
-		w.addError(parserErr.Error())
+		d.addError(parserErr.Error())
 		return nil
 	}
 
@@ -62,39 +52,20 @@ func (w *Digger) Parse(in *bytes.Reader) []offer.Offer {
 	return offers
 }
 
-func (w *Digger) fetch() *bytes.Reader {
-	resp, err := http.Get(w.TargetUri)
+func (d *Digger) Get() []offer.Offer {
+	reader := d.Fetcher.Fetch()
+	content, err := ioutil.ReadAll(reader)
+
 	if err != nil {
-		fmt.Println(err)
-		fmt.Errorf("error on GET %s", w.TargetUri)
+		d.addError(err.Error())
 		return nil
 	}
-	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	offers := d.Parse(content)
 
-	if err == nil {
-		fmt.Println(err)
+	if len(d.GetErrors()) > 0 {
+		return nil
 	}
-
-	reader := bytes.NewReader(body)
-	return reader
-}
-
-func (w *Digger) FetchAll() []offer.Offer {
-	content := w.fetch()
-
-	if content == nil {
-		fmt.Println("no content")
-	}
-
-	offers := w.Parse(content)
 
 	return offers
-}
-
-func (w *Digger) FetchNew() []*offer.Offer {
-	var result []*offer.Offer
-
-	return result
 }
