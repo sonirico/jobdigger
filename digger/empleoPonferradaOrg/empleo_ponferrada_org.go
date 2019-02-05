@@ -21,12 +21,12 @@ type Digger struct {
 func New(targetUri string) *Digger {
 	return &Digger{
 		Fetcher: fetcher.New(targetUri),
-		errors:    []string{},
+		errors:  []string{},
 	}
 }
 
 func (d *Digger) parsePubDate(rawDate rss.PubDate) *time.Time {
-	parsed, err := time.Parse("Mon, 02 Jan 2006 03:04:05 GMT", string(rawDate))
+	parsed, err := time.Parse("Mon, 02 Jan 2006 15:04:05 GMT", string(rawDate))
 
 	if err != nil {
 		d.addError(err.Error())
@@ -56,10 +56,10 @@ func (d *Digger) Parse(payload []byte) []offer.Offer {
 
 	for _, item := range result.Channel.Items {
 		offers = append(offers, offer.Offer{
-			Title: item.Title,
-			Link: item.Link,
+			Title:       item.Title,
+			Link:        item.Link,
 			Description: item.Description,
-			PubDate: d.parsePubDate(item.PubDate),
+			PubDate:     d.parsePubDate(item.PubDate),
 		})
 	}
 

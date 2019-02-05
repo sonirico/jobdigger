@@ -6,8 +6,8 @@ import (
 )
 
 type TestOffer struct {
-	Title string
-	Link string
+	Title       string
+	Link        string
 	Description string
 	PublishedAt string
 }
@@ -65,7 +65,7 @@ func TestDiggerSeveralResults_Parse(t *testing.T) {
 					<title>Encofrador (duplicada)</title>
 					<link>http://empleo.ponferrada.org/ofertas/ver/f66d3a27</link>
 					<description>Encofrador oficial de 1ª</description>
-					<pubDate>Wed, 30 Jan 2019 08:11:31 GMT</pubDate>
+					<pubDate>Wed, 30 Jan 2019 23:11:31 GMT</pubDate>
 				</item>
 			</channel>
 		</rss>
@@ -80,16 +80,16 @@ func TestDiggerSeveralResults_Parse(t *testing.T) {
 
 	expected := []TestOffer{
 		{
-			Title: "Fisioterapeuta u osteópata.",
-			Link: "http://empleo.ponferrada.org/ofertas/ver/d3ce2632",
+			Title:       "Fisioterapeuta u osteópata.",
+			Link:        "http://empleo.ponferrada.org/ofertas/ver/d3ce2632",
 			Description: "Fisioterapeuta u osteópata.",
 			PublishedAt: "2019-01-30 08:11:23 GMT",
 		},
 		{
-			Title: "Encofrador (duplicada)",
-			Link: "http://empleo.ponferrada.org/ofertas/ver/f66d3a27",
+			Title:       "Encofrador (duplicada)",
+			Link:        "http://empleo.ponferrada.org/ofertas/ver/f66d3a27",
 			Description: "Encofrador oficial de 1ª",
-			PublishedAt: "2019-01-30 08:11:31 GMT",
+			PublishedAt: "2019-01-30 23:11:31 GMT",
 		},
 	}
 
@@ -118,7 +118,6 @@ func TestDiggerNoneResults_Parse(t *testing.T) {
 		t.Fatalf("expected %d offers. got %d", 0, len(offers))
 	}
 }
-
 
 func TestDiggerEmptyPayload_Parse(t *testing.T) {
 	payload := []byte(``)

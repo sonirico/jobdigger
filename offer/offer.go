@@ -30,5 +30,5 @@ func (o *Offer) PublishedAt() string {
 	if o.PubDate == nil {
 		return ""
 	}
-	return o.PubDate.Format("2006-01-02 03:04:05 GMT")
+	return o.PubDate.Format("2006-01-02 15:04:05 GMT")
 }

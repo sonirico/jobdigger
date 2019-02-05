@@ -5,7 +5,7 @@ import (
 	"jobdigger/digger/empleoPonferradaOrg"
 )
 
-func main () {
+func main() {
 	empleoPonferradaOrgDigger := empleoPonferradaOrg.New("https://empleo.ponferrada.org/rss")
 	offers := empleoPonferradaOrgDigger.Get()
 
