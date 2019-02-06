@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+    <channel>
+        <title>INSTITUTO MUNICIPAL PARA LA FORMACIÓN Y EL EMPLEO RSS</title>
+        <link>http://empleo.ponferrada.org</link>
+        <description>Ofertas, novedades y artículos de INSTITUTO MUNICIPAL PARA LA FORMACIÓN Y EL EMPLEO</description>
+        <ttl>60</ttl>
+        <item>
+            <title>Fisioterapeuta u osteópata.</title>
+            <link>http://empleo.ponferrada.org/ofertas/ver/d3ce2632</link>
+            <description>Fisioterapeuta u osteópata.</description>
+            <pubDate>Wed, 30 Jan 2019 08:11:23 GMT</pubDate>
+        </item>
+        <item>
+            <title>Encofrador (duplicada)</title>
+            <link>http://empleo.ponferrada.org/ofertas/ver/f66d3a27</link>
+            <description>Encofrador oficial de 1ª</description>
+            <pubDate>Wed, 30 Jan 2019 08:11:31 GMT</pubDate>
+        </item>
+    </channel>
+</rss>

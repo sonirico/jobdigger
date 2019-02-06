@@ -11,8 +11,6 @@ import (
 )
 
 type Digger struct {
-	digger.Digger
-
 	Fetcher *fetcher.BaseFetcher
 
 	errors []string
@@ -66,20 +64,18 @@ func (d *Digger) Parse(payload []byte) []offer.Offer {
 	return offers
 }
 
-func (d *Digger) Get() []offer.Offer {
+func (d *Digger) Get() (*digger.Result, error) {
 	reader := d.Fetcher.Fetch()
 	content, err := ioutil.ReadAll(reader)
 
 	if err != nil {
 		d.addError(err.Error())
-		return nil
+		return &digger.Result{}, nil
 	}
 
 	offers := d.Parse(content)
+	ok := len(offers)
+	failed := len(d.GetErrors())
 
-	if len(d.GetErrors()) > 0 {
-		return nil
-	}
-
-	return offers
+	return digger.NewResult(offers, ok, failed), nil
 }

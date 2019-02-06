@@ -7,9 +7,15 @@ import (
 
 func main() {
 	empleoPonferradaOrgDigger := empleoPonferradaOrg.New("https://empleo.ponferrada.org/rss")
-	offers := empleoPonferradaOrgDigger.Get()
+	result, err := empleoPonferradaOrgDigger.Get()
 
-	for index, offer := range offers {
+	if err != nil {
+		fmt.Println("Fetch error")
+	}
+
+	for index, offer := range result.Offers {
 		fmt.Println(index, offer)
 	}
+
+	fmt.Println(fmt.Sprintf("OK: %d \nFAILED: %d\nTOTAL: %d", result.Ok, result.Failed, result.Total()))
 }
