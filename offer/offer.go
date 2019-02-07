@@ -1,6 +1,8 @@
 package offer
 
-import "time"
+import (
+	"time"
+)
 
 type Offer struct {
 	Title       string
@@ -32,3 +34,9 @@ func (o *Offer) PublishedAt() string {
 	}
 	return o.PubDate.Format("2006-01-02 15:04:05 GMT")
 }
+
+func (o *Offer) PublishedAtUnix() int64 {
+	return o.PubDate.Unix()
+}
+
+
