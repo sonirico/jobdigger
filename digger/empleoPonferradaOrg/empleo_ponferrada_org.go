@@ -64,7 +64,7 @@ func (d *Digger) Parse(payload []byte) []offer.Offer {
 	return offers
 }
 
-func (d *Digger) Get() (*digger.Result, error) {
+func (d *Digger) GetOffers() (*digger.Result, error) {
 	reader := d.Fetcher.Fetch()
 	content, err := ioutil.ReadAll(reader)
 
