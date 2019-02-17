@@ -2,6 +2,7 @@ package empleoPonferradaOrg
 
 import (
 	"jobdigger/offer"
+	"jobdigger/test"
 	"testing"
 )
 
@@ -47,29 +48,7 @@ func testOffer(t *testing.T, o offer.Offer, e TestOffer) bool {
 }
 
 func TestDiggerSeveralResults_Parse(t *testing.T) {
-	payload := []byte(`
-		<?xml version="1.0" encoding="utf-8"?>
-		<rss version="2.0">
-			<channel>
-				<title>INSTITUTO MUNICIPAL PARA LA FORMACIÓN Y EL EMPLEO RSS</title>
-				<link>http://empleo.ponferrada.org</link>
-				<description>Ofertas, novedades y artículos de INSTITUTO MUNICIPAL PARA LA FORMACIÓN Y EL EMPLEO</description>
-				<ttl>60</ttl>
-				<item>
-					<title>Fisioterapeuta u osteópata.</title>
-					<link>http://empleo.ponferrada.org/ofertas/ver/d3ce2632</link>
-					<description>Fisioterapeuta u osteópata.</description>
-					<pubDate>Wed, 30 Jan 2019 08:11:23 GMT</pubDate>
-				</item>
-				<item>
-					<title>Encofrador (duplicada)</title>
-					<link>http://empleo.ponferrada.org/ofertas/ver/f66d3a27</link>
-					<description>Encofrador oficial de 1ª</description>
-					<pubDate>Wed, 30 Jan 2019 23:11:31 GMT</pubDate>
-				</item>
-			</channel>
-		</rss>
-	`)
+	payload := test.LoadFixture(t, "2_offers_rss.xml")
 	digger := New("https://empleo.ponferrada.org/rss")
 	offers := digger.Parse(payload)
 	checkParserErrors(t, digger)
@@ -99,17 +78,7 @@ func TestDiggerSeveralResults_Parse(t *testing.T) {
 }
 
 func TestDiggerNoneResults_Parse(t *testing.T) {
-	payload := []byte(`
-		<?xml version="1.0" encoding="utf-8"?>
-		<rss version="2.0">
-			<channel>
-				<title>INSTITUTO MUNICIPAL PARA LA FORMACIÓN Y EL EMPLEO RSS</title>
-				<link>http://empleo.ponferrada.org</link>
-				<description>Ofertas, novedades y artículos de INSTITUTO MUNICIPAL PARA LA FORMACIÓN Y EL EMPLEO</description>
-				<ttl>60</ttl>
-			</channel>
-		</rss>
-	`)
+	payload := test.LoadFixture(t, "no_offers_rss.xml")
 	digger := New("https://empleo.ponferrada.org/rss")
 	offers := digger.Parse(payload)
 	checkParserErrors(t, digger)
