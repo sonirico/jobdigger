@@ -1,37 +1,45 @@
 package offer
 
 import (
-	"bytes"
-	"text/template"
+	"database/sql"
+	"fmt"
+	"log"
 )
 
 const (
-	DB_TABLE = "offer"
+	DbTable = "offer"
 )
 
 type SQliteOffer struct {
-	Table string
+	db    *sql.DB
 	Offer *Offer
 }
 
-func NewSQliteOffer (offer *Offer) *SQliteOffer {
-	return &SQliteOffer{Offer: offer, Table: DB_TABLE}
+func NewSQliteOffer(offer *Offer, db *sql.DB) *SQliteOffer {
+	return &SQliteOffer{Offer: offer, db: db}
 }
 
-func (so *SQliteOffer) Insert() string {
-	tplStr := `
-		INSERT INTO {{.Table}}
+func (so *SQliteOffer) Insert() {
+	insertStmt := fmt.Sprintf(`
+		INSERT INTO %s
 		(title, permalink, description, published_at)
-		VALUES ("{{.Offer.Title}}", "{{.Offer.Link}}", "{{.Offer.Description}}", {{.Offer.PublishedAtUnix}})
-	`
-	tpl, err := template.New("test").Parse(tplStr)
+		VALUES (?, ?, ?, ?)
+	`, DbTable)
+	tx, err := so.db.Begin()
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
-	var buffer bytes.Buffer
-	err = tpl.Execute(&buffer, so)
+	stmt, err := tx.Prepare(insertStmt)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
-	return buffer.String()
+	defer stmt.Close()
+	_, err = stmt.Exec(so.Offer.Title, so.Offer.Link, so.Offer.Description, so.Offer.PublishedAtUnix())
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = tx.Commit()
+	if err != nil {
+		log.Fatal(err)
+	}
 }

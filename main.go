@@ -3,9 +3,9 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"jobdigger/digger/empleoPonferradaOrg"
-	offer2 "jobdigger/offer"
 	_ "github.com/mattn/go-sqlite3"
+	"jobdigger/digger/empleoPonferradaOrg"
+	"jobdigger/offer"
 	"log"
 )
 
@@ -17,30 +17,16 @@ func main() {
 		fmt.Println("Fetch error")
 	}
 
-
 	db, err := sql.Open("sqlite3", "./database/jobdigger.db")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
-	for index, offer := range result.Offers {
-		fmt.Println(index, offer)
-		insertStmt := offer2.NewSQliteOffer(&offer).Insert()
-
-		tx, err := db.Begin()
-		if err != nil {
-			log.Fatal(err)
-		}
-		stmt, err := tx.Prepare(insertStmt)
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer stmt.Close()
-		_, err = stmt.Exec()
-		tx.Commit()
+	for index, o := range result.Offers {
+		fmt.Println(index, o)
+		offer.NewSQliteOffer(&o, db).Insert()
 	}
-
 
 	fmt.Println(fmt.Sprintf("OK: %d \nFAILED: %d\nTOTAL: %d", result.Ok, result.Failed, result.Total()))
 }

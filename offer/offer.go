@@ -38,5 +38,3 @@ func (o *Offer) PublishedAt() string {
 func (o *Offer) PublishedAtUnix() int64 {
 	return o.PubDate.Unix()
 }
-
-
